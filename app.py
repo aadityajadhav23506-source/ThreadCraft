@@ -474,11 +474,13 @@ def order_confirmation(order_id):
 
 # ---------------- RUN APP ----------------
 
+# Create database tables for local and Render deployment
+create_database()
+
+# Run locally
 if __name__ == "__main__":
-    create_database()
     app.run(
         host="127.0.0.1",
         port=5000,
         debug=False
     )
-

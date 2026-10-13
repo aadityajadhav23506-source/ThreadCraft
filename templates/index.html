@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadCraft | Custom Shirt Ordering</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="{{ url_for('home') }}" class="logo">
+            Thread<span>Craft.</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('customize') }}">Customize</a>
+                <a href="{{ url_for('view_cart') }}">Cart</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}" class="nav-cta">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="container flash-list">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <span class="eyebrow">YOUR STYLE. YOUR SHIRT.</span>
+
+                <h1>
+                    Designed by you.<br>
+                    <span>Made for you.</span>
+                </h1>
+
+                <p>
+                    Create your own shirt with your favourite fabric,
+                    colour, collar, sleeve and size. Choose your style
+                    and place your order in a few simple steps.
+                </p>
+
+                <div class="hero-actions">
+                    {% if session.get('user_id') %}
+                        <a href="{{ url_for('customize') }}" class="btn">
+                            Customize Your Shirt →
+                        </a>
+                        <a href="{{ url_for('view_cart') }}" class="btn btn-secondary">
+                            View Cart
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn">
+                            Start Designing →
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-secondary">
+                            Login
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <svg class="shirt-art" viewBox="0 0 300 320"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="Illustration of a formal shirt">
+                    <defs>
+                        <linearGradient id="shirtGradient" x1="0" y1="0"
+                                        x2="1" y2="1">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="100%" stop-color="#dbe7fa"/>
+                        </linearGradient>
+                    </defs>
+
+                    <path d="M95 35 L125 20 L150 43 L175 20 L205 35
+                             L263 72 L235 125 L207 110 L207 287
+                             Q150 304 93 287 L93 110 L65 125
+                             L37 72 Z"
+                          fill="url(#shirtGradient)"
+                          stroke="#a9bfdf"
+                          stroke-width="3"
+                          stroke-linejoin="round"/>
+
+                    <path d="M125 20 L150 43 L133 82 L105 42 Z"
+                          fill="#f8fbff" stroke="#a9bfdf"
+                          stroke-width="2"/>
+
+                    <path d="M175 20 L150 43 L167 82 L195 42 Z"
+                          fill="#f8fbff" stroke="#a9bfdf"
+                          stroke-width="2"/>
+
+                    <path d="M150 43 L150 287"
+                          stroke="#a9bfdf" stroke-width="2"/>
+
+                    <g fill="#2463eb">
+                        <circle cx="150" cy="104" r="3"/>
+                        <circle cx="150" cy="139" r="3"/>
+                        <circle cx="150" cy="174" r="3"/>
+                        <circle cx="150" cy="209" r="3"/>
+                        <circle cx="150" cy="244" r="3"/>
+                    </g>
+
+                    <path d="M173 118 L196 118 L196 157 L173 157 Z"
+                          fill="#edf4ff" stroke="#a9bfdf"
+                          stroke-width="2"/>
+                </svg>
+
+                <div class="hero-note">
+                    ✦ Your design, your choice
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Why Choose ThreadCraft?</h2>
+                <p>A simple way to design a shirt that matches your style.</p>
+            </div>
+
+            <div class="benefit-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">✦</div>
+                    <h3>Personalized Design</h3>
+                    <p>
+                        Choose shirt type, colour, fabric, collar,
+                        sleeve and size according to your preference.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">₹</div>
+                    <h3>Clear Pricing</h3>
+                    <p>
+                        View your shirt price before adding it to
+                        the cart and placing your order.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">✓</div>
+                    <h3>Easy Ordering</h3>
+                    <p>
+                        Customize your shirt, review your cart,
+                        enter delivery details and confirm your order.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="card" style="text-align: center;">
+                <h2 style="color: var(--navy); margin-bottom: 10px;">
+                    Ready to Create Your Style?
+                </h2>
+                <p style="color: var(--muted); margin-bottom: 20px;">
+                    Start with your favourite shirt design today.
+                </p>
+
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('customize') }}" class="btn">
+                        Customize Now
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn">
+                        Create Your Account
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <strong>ThreadCraft.</strong>
+        <p>Custom Shirt Ordering System | College Project</p>
+        <p>© 2026 ThreadCraft. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

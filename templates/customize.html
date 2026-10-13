@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Shirt | ThreadCraft</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="{{ url_for('home') }}" class="logo">Thread<span>Craft.</span></a>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('customize') }}">Customize</a>
+            <a href="{{ url_for('view_cart') }}">Cart</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="flash-list">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <header class="page-heading">
+        <span class="eyebrow">MAKE IT YOURS</span>
+        <h1>Customize Your Shirt</h1>
+        <p>Choose your preferred style, fabric and fit.</p>
+    </header>
+
+    <div class="customize-layout">
+        <section class="card customize-form">
+            <h2>Shirt Details</h2>
+            <p class="card-description">
+                Select all options before adding your shirt to the cart.
+            </p>
+
+            <form action="{{ url_for('add_to_cart') }}"
+                  method="POST"
+                  id="customizeForm">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="shirt_type">Shirt Type</label>
+                        <select class="form-control"
+                                id="shirt_type"
+                                name="shirt_type"
+                                required>
+                            {% for item in shirt_types %}
+                                <option value="{{ item }}"
+                                    {% if item == 'Formal Shirt' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Shirt Colour</label>
+                        <select class="form-control"
+                                id="color"
+                                name="color"
+                                required>
+                            {% for item in colors %}
+                                <option value="{{ item }}"
+                                    {% if item == 'White' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fabric">Fabric</label>
+                        <select class="form-control"
+                                id="fabric"
+                                name="fabric"
+                                required>
+                            {% for item in fabrics %}
+                                <option value="{{ item }}"
+                                    {% if item == 'Cotton' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="collar">Collar Style</label>
+                        <select class="form-control"
+                                id="collar"
+                                name="collar"
+                                required>
+                            {% for item in collars %}
+                                <option value="{{ item }}"
+                                    {% if item == 'Regular Collar' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sleeve">Sleeve Style</label>
+                        <select class="form-control"
+                                id="sleeve"
+                                name="sleeve"
+                                required>
+                            {% for item in sleeves %}
+                                <option value="{{ item }}"
+                                    {% if item == 'Full Sleeve' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size">Size</label>
+                        <select class="form-control"
+                                id="size"
+                                name="size"
+                                required>
+                            {% for item in sizes %}
+                                <option value="{{ item }}"
+                                    {% if item == 'M' %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-block">
+                    Add to Cart →
+                </button>
+            </form>
+        </section>
+
+        <aside class="card summary-card">
+            <h2>Price Summary</h2>
+            <p class="card-description">
+                Your estimated shirt price.
+            </p>
+
+            <div class="summary-row">
+                <span>Shirt Type</span>
+                <strong id="summaryType">Formal Shirt</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Fabric</span>
+                <strong id="summaryFabric">Cotton</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Sleeve</span>
+                <strong id="summarySleeve">Full Sleeve</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Size</span>
+                <strong id="summarySize">M</strong>
+            </div>
+
+            <div class="summary-total">
+                <span>Total Price</span>
+                <span class="price-value" id="totalPrice">₹550</span>
+            </div>
+
+            <p class="form-help">
+                Final price is calculated by the server when you add
+                the shirt to the cart.
+            </p>
+        </aside>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <strong>ThreadCraft.</strong>
+        <p>Choose your style. Create your shirt.</p>
+    </div>
+</footer>
+
+<script>
+    const shirtType = document.getElementById("shirt_type");
+    const fabric = document.getElementById("fabric");
+    const sleeve = document.getElementById("sleeve");
+    const size = document.getElementById("size");
+
+    const fabricPrices = {
+        "Cotton": 500,
+        "Linen": 650,
+        "Denim": 700
+    };
+
+    function updatePrice() {
+        let price = fabricPrices[fabric.value] || 500;
+
+        if (sleeve.value === "Full Sleeve") {
+            price += 50;
+        }
+
+        if (size.value === "XL") {
+            price += 30;
+        } else if (size.value === "XXL") {
+            price += 50;
+        }
+
+        if (shirtType.value === "Printed Shirt") {
+            price += 100;
+        }
+
+        document.getElementById("totalPrice").textContent =
+            "₹" + price;
+
+        document.getElementById("summaryType").textContent =
+            shirtType.value;
+
+        document.getElementById("summaryFabric").textContent =
+            fabric.value;
+
+        document.getElementById("summarySleeve").textContent =
+            sleeve.value;
+
+        document.getElementById("summarySize").textContent =
+            size.value;
+    }
+
+    [shirtType, fabric, sleeve, size].forEach(function (element) {
+        element.addEventListener("change", updatePrice);
+    });
+
+    updatePrice();
+</script>
+
+</body>
+</html>

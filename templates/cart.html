@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | ThreadCraft</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="{{ url_for('home') }}" class="logo">Thread<span>Craft.</span></a>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('customize') }}">Customize</a>
+            <a href="{{ url_for('view_cart') }}">Cart</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="flash-list">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <header class="page-heading">
+        <span class="eyebrow">YOUR SELECTION</span>
+        <h1>Shopping Cart</h1>
+        <p>Review your custom shirts before checkout.</p>
+    </header>
+
+    {% if items %}
+        <div class="cart-layout">
+            <section class="card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Shirt Details</th>
+                                <th>Colour</th>
+                                <th>Fabric</th>
+                                <th>Size</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td>
+                                        <div class="product-name">
+                                            {{ item['shirt_type'] }}
+                                        </div>
+                                        <div class="muted">
+                                            {{ item['collar'] }},
+                                            {{ item['sleeve'] }}
+                                        </div>
+                                    </td>
+
+                                    <td>{{ item['color'] }}</td>
+                                    <td>{{ item['fabric'] }}</td>
+                                    <td>{{ item['size'] }}</td>
+                                    <td>
+                                        <strong>₹{{ item['price'] }}</strong>
+                                    </td>
+
+                                    <td>
+                                        <form action="{{ url_for('remove_from_cart', item_id=item['id']) }}"
+                                              method="POST">
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-small">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="cart-actions">
+                    <a href="{{ url_for('customize') }}"
+                       class="btn btn-secondary">
+                        ← Add Another Shirt
+                    </a>
+
+                    <a href="{{ url_for('checkout') }}" class="btn">
+                        Proceed to Checkout →
+                    </a>
+                </div>
+            </section>
+
+            <aside class="card cart-total-card">
+                <h2>Order Summary</h2>
+
+                <div class="total-line">
+                    <span>Items</span>
+                    <strong>{{ items|length }}</strong>
+                </div>
+
+                <div class="total-line grand-total">
+                    <span>Total</span>
+                    <span>₹{{ total }}</span>
+                </div>
+
+                <p class="form-help" style="margin-bottom: 18px;">
+                    The total is calculated from the items in your cart.
+                </p>
+
+                <a href="{{ url_for('checkout') }}"
+                   class="btn btn-block">
+                    Checkout Now
+                </a>
+            </aside>
+        </div>
+
+    {% else %}
+        <section class="card empty-state">
+            <div class="empty-icon">🛍️</div>
+            <h2>Your Cart is Empty</h2>
+            <p>You haven't added any shirts yet.</p>
+
+            <a href="{{ url_for('customize') }}" class="btn">
+                Start Customizing →
+            </a>
+        </section>
+    {% endif %}
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <strong>ThreadCraft.</strong>
+        <p>Your custom shirt journey starts here.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | ThreadCraft</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="{{ url_for('home') }}" class="logo">Thread<span>Craft.</span></a>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('customize') }}">Customize</a>
+            <a href="{{ url_for('view_cart') }}">Cart</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="flash-list">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <header class="page-heading">
+        <span class="eyebrow">ALMOST THERE</span>
+        <h1>Checkout</h1>
+        <p>Enter your delivery details to place your order.</p>
+    </header>
+
+    <div class="checkout-layout">
+        <section class="card">
+            <h2 style="color: var(--navy); margin-bottom: 7px;">
+                Delivery Information
+            </h2>
+
+            <p class="card-description">
+                Please provide accurate contact and delivery details.
+            </p>
+
+            <form action="{{ url_for('checkout') }}" method="POST">
+                <div class="form-group">
+                    <label for="customer_name">Full Name</label>
+                    <input class="form-control"
+                           type="text"
+                           id="customer_name"
+                           name="customer_name"
+                           placeholder="Enter your full name"
+                           autocomplete="name"
+                           maxlength="100"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Mobile Number</label>
+                    <input class="form-control"
+                           type="tel"
+                           id="phone"
+                           name="phone"
+                           placeholder="10-digit mobile number"
+                           pattern="[0-9]{10}"
+                           inputmode="numeric"
+                           minlength="10"
+                           maxlength="10"
+                           title="Enter exactly 10 digits"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <textarea class="form-control"
+                              id="address"
+                              name="address"
+                              placeholder="House number, street, city, PIN code"
+                              autocomplete="street-address"
+                              maxlength="1000"
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-block">
+                    Place Order →
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <a href="{{ url_for('view_cart') }}">← Back to Cart</a>
+            </div>
+        </section>
+
+        <aside class="card cart-total-card">
+            <h2>Order Summary</h2>
+
+            {% for item in items %}
+                <div class="total-line">
+                    <div>
+                        <strong>{{ item['shirt_type'] }}</strong>
+                        <div class="muted">
+                            {{ item['color'] }} · {{ item['fabric'] }}
+                            · {{ item['size'] }}
+                        </div>
+                    </div>
+                    <strong>₹{{ item['price'] }}</strong>
+                </div>
+            {% endfor %}
+
+            <div class="total-line grand-total">
+                <span>Total</span>
+                <span>₹{{ total }}</span>
+            </div>
+
+            <p class="form-help">
+                Payment is not collected on this page. This form places
+                an order in the project's database.
+            </p>
+        </aside>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <strong>ThreadCraft.</strong>
+        <p>Review your details before placing the order.</p>
+    </div>
+</footer>
+
+</body>
+</html>

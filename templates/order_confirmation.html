@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation | ThreadCraft</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="{{ url_for('home') }}" class="logo">Thread<span>Craft.</span></a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('customize') }}">Customize</a>
+            <a href="{{ url_for('view_cart') }}">Cart</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <section class="success-banner">
+        <div class="success-icon">✓</div>
+
+        <h1>Order Placed Successfully!</h1>
+
+        <p>
+            Thank you for choosing ThreadCraft.
+            Your order details are shown below.
+        </p>
+
+        <div class="order-id">
+            Order ID: #{{ order['id'] }}
+        </div>
+    </section>
+
+    <section class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between;
+                    align-items: center; gap: 12px; flex-wrap: wrap;">
+            <h2 style="color: var(--navy);">Order Details</h2>
+            <span class="status-badge">{{ order['status'] }}</span>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-box">
+                <span class="detail-label">Customer Name</span>
+                <strong>{{ order['customer_name'] }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Mobile Number</span>
+                <strong>{{ order['phone'] }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Order Date</span>
+                <strong>{{ order['created_at'] }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Order Status</span>
+                <strong>{{ order['status'] }}</strong>
+            </div>
+
+            <div class="detail-box" style="grid-column: 1 / -1;">
+                <span class="detail-label">Delivery Address</span>
+                <strong>{{ order['address'] }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="card" style="margin-bottom: 24px;">
+        <h2 style="color: var(--navy); margin-bottom: 20px;">
+            Your Custom Shirts
+        </h2>
+
+        {% if items %}
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Shirt Type</th>
+                            <th>Colour</th>
+                            <th>Fabric</th>
+                            <th>Collar</th>
+                            <th>Sleeve</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td class="product-name">
+                                    {{ item['shirt_type'] }}
+                                </td>
+                                <td>{{ item['color'] }}</td>
+                                <td>{{ item['fabric'] }}</td>
+                                <td>{{ item['collar'] }}</td>
+                                <td>{{ item['sleeve'] }}</td>
+                                <td>{{ item['size'] }}</td>
+                                <td>
+                                    <strong>₹{{ item['price'] }}</strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="muted">No order items were found.</p>
+        {% endif %}
+
+        <div class="total-line grand-total" style="margin-top: 15px;">
+            <span>Order Total</span>
+            <span>₹{{ order['total'] }}</span>
+        </div>
+    </section>
+
+    <div class="order-actions">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            ← Back to Home
+        </a>
+
+        <a href="{{ url_for('customize') }}" class="btn">
+            Create Another Shirt →
+        </a>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <strong>ThreadCraft.</strong>
+        <p>Thank you for your order!</p>
+    </div>
+</footer>
+
+</body>
+</html>
